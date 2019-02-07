@@ -17,13 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
           'Name of the file you wish to write to. Note: Please add the extension to the filename.')
 
       ->setCode(function (InputInterface $input, OutputInterface $output) {
-
+        $reportClass = new Report();
         $file = $input->getArgument('fileName');
 
-        //ugly array with fixed dates due to lack of time
-        $dateArray = ["01-02-2019", "01-03-2019", "01-04-2019"];
-        $report = generateReportArray($dateArray);
-	    writeToCsv($report, $file);
+        $report = $reportClass->generateReportArray();
+        $reportClass->writeToCsv($report, $file);
 
 	    return $output->writeln("<info>Report generated! Thank you for using Acme Cleaning.</info>");
 

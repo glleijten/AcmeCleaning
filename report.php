@@ -1,61 +1,65 @@
 <?php
 
-/**
- * @param $months
- *
- * @return array
- */
-function generateReportArray($months)
-{
-	$array = ['header' => 'datum,activiteit,uren'];
+class Report {
 
-	foreach ($months as $day) {
-		$fullDate = strtotime($day);
-		$monthYear = date('M-y', $fullDate);
-		$totalDays = daysInMonth($day);
+	/**
+	 *
+	 * @return array
+	 */
+	public function generateReportArray()
+	{
+		//ugly array with fixed dates due to lack of time
+		$dateArray = ["01-02-2019", "01-03-2019", "01-04-2019"];
+		$array = ['header' => 'datum,activiteit,uren'];
 
-		for ($i = 1; $i <= $totalDays; $i++) {
-			$date = $i . '-' . $monthYear;
-			$lastWeekday = date('d-M-y', strtotime("last friday of $date"));
-			$dayOfTheWeek = date('l', strtotime($date));
+		foreach ($dateArray as $day) {
+			$fullDate = strtotime($day);
+			$monthYear = date('M-y', $fullDate);
+			$totalDays = $this->daysInMonth($day);
 
-			if ($dayOfTheWeek == 'Tuesday' || $dayOfTheWeek == 'Thursday') {
-				$array[] = $date. ',stofzuigen,21';
-			} elseif ($date == $lastWeekday) {
-				$array[] = $date. ',ramen,35';
-			} elseif ($i == 01) {
-				$array[] = $date. ',koelkast,50';
-			} else {
-				$array[] = $date;
+			for ($i = 1; $i <= $totalDays; $i++) {
+				$date = $i . '-' . $monthYear;
+				$lastWeekday = date('d-M-y', strtotime("last friday of $date"));
+				$dayOfTheWeek = date('l', strtotime($date));
+
+				if ($dayOfTheWeek == 'Tuesday' || $dayOfTheWeek == 'Thursday') {
+					$array[] = $date. ',stofzuigen,21';
+				} elseif ($date == $lastWeekday) {
+					$array[] = $date. ',ramen,35';
+				} elseif ($i == 01) {
+					$array[] = $date. ',koelkast,50';
+				} else {
+					$array[] = $date;
+				}
 			}
 		}
-	}
-	return $array;
-}
-
-/**
- * @param $fileName
- * @param $array
- */
-function writeToCsv($array, $fileName)
-{
-	if (!isset($fileName)) {
-		$fileName = 'file.csv';
+		return $array;
 	}
 
-	$handle = fopen($fileName, "a");
-	fputcsv($handle, $array, PHP_EOL);
-	fclose($handle);
-}
+	/**
+	 * @param $fileName
+	 * @param $array
+	 */
+	public function writeToCsv($array, $fileName)
+	{
+		if (!isset($fileName)) {
+			$fileName = 'file.csv';
+		}
 
-/**
- * @param $date
- *
- * @return int
- */
-function daysInMonth($date)
-{
-	$array = explode('-', $date);
+		$handle = fopen($fileName, "a");
+		fputcsv($handle, $array, PHP_EOL);
+		fclose($handle);
+	}
 
-	return cal_days_in_month(CAL_GREGORIAN, $array[1], $array[2]);
+	/**
+	 * @param $date
+	 *
+	 * @return int
+	 */
+	private function daysInMonth($date)
+	{
+		$array = explode('-', $date);
+
+		return cal_days_in_month(CAL_GREGORIAN, $array[1], $array[2]);
+	}
 }
