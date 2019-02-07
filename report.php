@@ -9,6 +9,7 @@ class Report {
 	public function generateReportArray()
 	{
 		//ugly array with fixed dates due to lack of time
+		//idea was: current date with date(), use strtotime with variable to add n months and add as input parameter
 		$dateArray = ["01-02-2019", "01-03-2019", "01-04-2019"];
 		$array = ['header' => 'datum,activiteit,uren'];
 
