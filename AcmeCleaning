@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+require 'report.php';
+ 
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+ 
+(new Application('Acme Cleaning', '1.0.0'))
+      ->register('generate-report')
+
+      ->addArgument('fileName',
+          InputArgument::OPTIONAL,
+          'Name of the file you wish to write to. Note: Please add the extension to the filename.')
+
+      ->setCode(function (InputInterface $input, OutputInterface $output) {
+
+        $file = $input->getArgument('fileName');
+
+        //ugly array with fixed dates due to lack of time
+        $dateArray = ["01-02-2019", "01-03-2019", "01-04-2019"];
+        $report = generateReportArray($dateArray);
+	    writeToCsv($report, $file);
+
+	    return $output->writeln("<info>Report generated! Thank you for using Acme Cleaning.</info>");
+
+      })
+      ->getApplication()
+      ->run();	
